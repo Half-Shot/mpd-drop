@@ -46,7 +46,7 @@ async function putSongYoutube(req: Request, res: Response) {
     try {
         const res = await exec(`/usr/bin/youtube-dl -x '${req.body.yt}'`, {
             cwd: MUSIC_DIR,
-            timeout: 85,
+            timeout: 85000,
         });
         stdout = res.stdout;
         stderr = res.sterr;
@@ -73,7 +73,7 @@ async function putCommon(req: Request, res: Response) {
         const findString = `(file contains '${req.params.filename}')`;
         await client.api.db.searchadd(findString);
         const songs = await client.api.queue.find(findString);
-        if (!songs && songs.length) {
+        if (!songs || !songs.length) {
             console.log("Could not find file in MPD");
             res.status(500).send("Could not find file in MPD");
             return;

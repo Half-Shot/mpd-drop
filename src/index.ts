@@ -38,15 +38,24 @@ async function putSongFile(req: Request, res: Response) {
 
 async function putSongYoutube(req: Request, res: Response) {
     console.log("Got request for YouTube");
-    console.log(req.body);
     if (!req.body.yt) {
         res.status(400).send("NOT OK!");
         return;
     }
-    const { stdout } = await exec(`/usr/bin/youtube-dl -x '${req.body.yt}'`, {
-        cmd: MUSIC_DIR,
-    });
-    console.log(stdout);
+    let stdout, stderr;
+    try {
+        const res = await exec(`/usr/bin/youtube-dl -x '${req.body.yt}'`, {
+            cwd: MUSIC_DIR,
+            timeout: 85,
+        });
+        stdout = res.stdout;
+        stderr = res.sterr;
+        console.log("INFO:", stdout, stderr);    
+    } catch (err) {
+        console.log("ERROR downloading file:", err);
+        res.status(500).send(err.message);
+        return;
+    }
     const groups = /\[ffmpeg\] Destination: (.*)/gm.exec(stdout);
     if (!groups) {
         throw Error("Couldn't extract filename");
@@ -64,7 +73,7 @@ async function putCommon(req: Request, res: Response) {
         const findString = `(file contains '${req.params.filename}')`;
         await client.api.db.searchadd(findString);
         const songs = await client.api.queue.find(findString);
-        if (!songs) {
+        if (!songs && songs.length) {
             console.log("Could not find file in MPD");
             res.status(500).send("Could not find file in MPD");
             return;

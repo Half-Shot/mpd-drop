@@ -59,7 +59,6 @@ async function putCommon(req: Request, res: Response) {
     await client.api.db.rescan();
     console.log("File:", req.params.filename);
     console.log(`Rescanned DB`);
-    res.status(200).send("OK");
     if (req.query["play"]) {
         // Find it 
         const findString = `(file contains '${req.params.filename}')`;

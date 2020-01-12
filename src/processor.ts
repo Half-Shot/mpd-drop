@@ -45,13 +45,14 @@ export class SongProcessor {
         log.info(`Processing file ${filename}, q=${shouldQueue} p=${shouldPlay}`);
         await this.mpd.api.db.rescan();
         log.info(`Rescanned DB`);
-        if (!shouldQueue) {
+        if (!shouldQueue.valueOf()) {
             return;
         }
         // Find it 
         const findString = `(file contains '${filename}')`;
         await this.mpd.api.db.searchadd(findString);
-        if (!shouldPlay) {
+
+        if (!shouldPlay.valueOf()) {
             return;
         }
         const songs = await this.mpd.api.queue.find(findString);

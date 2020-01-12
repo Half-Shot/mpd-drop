@@ -15,12 +15,14 @@
     "config": "^3.2.4",
     "express": "^4.17.1",
     "js-yaml": "^3.13.1",
+    "matrix-bot-sdk": "^0.4.0",
+    "matrix-js-sdk": "^3.0.0-rc.1",
     "mpd-api": "^1.0.3",
     "winston": "^3.2.1"
   },
   "scripts": {
     "preinstall": "npm run build",
     "build": "tsc",
-    "start": "node lib/index.js"
+    "start": "NODE_ENV=production node lib/index.js"
   }
 }

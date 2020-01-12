@@ -1,26 +1,25 @@
-import {default as express, Request, Response} from "express";
-import bodyParser from "body-parser";
 import * as mpd from "mpd-api";
 import config from "config";
 import logger from "./log";
 import { SongProcessor } from "./processor";
 import { WebInterface } from "./web";
+import { MatrixInterface } from "./matrix";
 
 const log = logger("index");
-let client;
-let processor: SongProcessor;
-
-log.info("Hello!");
 
 async function main() {
-    client = await mpd.connect({
+    const client = await mpd.connect({
         host: config.get("mpd.host"),
         port: config.get("mpd.port"),
     });
-    processor = new SongProcessor(client);
-    if (config.get("web.enabled")) {
-        const web = new WebInterface(processor);
+    const processor = new SongProcessor(client);
+    if (config.has("web")) {
+        new WebInterface(processor);
     }
+    if (config.has("matrix")) {
+        await new MatrixInterface(processor).start();
+    }
+    log.info("Started");
 }
 
 main().catch((ex) => {

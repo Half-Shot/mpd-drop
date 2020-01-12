@@ -4,7 +4,8 @@ import * as mpd from "mpd-api";
 import config from "config";
 import logger from "./log";
 import { SongProcessor } from "./processor";
-const log = logger("index");
+
+const log = logger("WebInterface");
 
 export class WebInterface {
     constructor(private readonly processor: SongProcessor) {
@@ -20,7 +21,7 @@ export class WebInterface {
     }
 
     private async postSongFile(req: Request, res: Response) {
-        console.log(`Got request for file ${req.headers["content-type"]}`);
+        log.info(`Got request for file ${req.headers["content-type"]}`);
         try {
             const result = await this.processor.processBuffer(req.body, req.params.filename, new Boolean(req.query["queue"]), new Boolean(req.query["play"]));
             if (!result) {
@@ -33,7 +34,7 @@ export class WebInterface {
     }
     
     private async postSongYoutube(req: Request, res: Response) {
-        console.log("Got request for YouTube");
+        log.info("Got request for YouTube");
         if (!req.body.yt) {
             res.status(400).send("Missing `yt`");
             return;

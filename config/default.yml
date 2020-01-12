@@ -3,10 +3,17 @@ mpd:
   port: 6600
   uploadDir: /var/lib/mpd/music
 
-web:
-  enabled: true
-  host: 0.0.0.0
-  port: 9955
+# web:
+#   enabled: true
+#   host: 0.0.0.0
+#   port: 9955
+
+# matrix:
+#   accessToken: token
+#   url: url
+#   rooms: [
+#     "!a:room"
+#   ]
 
 log:
   level: "debug"

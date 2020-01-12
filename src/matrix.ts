@@ -5,6 +5,8 @@ import { SongProcessor } from "./processor";
 
 const log = logging("MatrixInterface");
 
+const MAX_MESSAGE_AGE = 30000;
+
 export class MatrixInterface {
     private readonly matrix: MatrixClient;
     private readonly allowedRooms: string[];
@@ -33,6 +35,9 @@ export class MatrixInterface {
             return;
         }
         if (!evt.content.body.startsWith("!mpd ")) {
+            return;
+        }
+        if (evt.unsigned.age && evt.unsigned.age >= MAX_MESSAGE_AGE) {
             return;
         }
         const commandArgs = evt.content.body.split(" ");

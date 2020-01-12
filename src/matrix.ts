@@ -45,8 +45,9 @@ export class MatrixInterface {
                     if (result) {
                         log.warn(result.status, result.msg);
                         await this.matrix.sendNotice(roomId, `An error occured when trying to queue this video: ${result.msg}`);
-                        await this.matrix.sendNotice(roomId, `Added video`);
+                        return;
                     }
+                    await this.matrix.sendNotice(roomId, `Added video`);
                 } catch (ex) {
                     log.warn(ex);
                     await this.matrix.sendNotice(roomId, "An error occured when trying to queue this video.");

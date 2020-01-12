@@ -5,16 +5,21 @@
   "license": "MIT",
   "devDependencies": {
     "@types/body-parser": "^1.17.1",
+    "@types/config": "^0.0.36",
     "@types/express": "^4.17.2",
     "@types/node": "^13.1.6",
     "typescript": "^3.7.4"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
+    "config": "^3.2.4",
     "express": "^4.17.1",
-    "mpd-api": "^1.0.3"
+    "js-yaml": "^3.13.1",
+    "mpd-api": "^1.0.3",
+    "winston": "^3.2.1"
   },
   "scripts": {
+    "preinstall": "npm run build",
     "build": "tsc",
     "start": "node lib/index.js"
   }

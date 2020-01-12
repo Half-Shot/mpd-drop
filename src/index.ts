@@ -68,17 +68,19 @@ async function putCommon(req: Request, res: Response) {
     await client.api.db.rescan();
     console.log("File:", req.params.filename);
     console.log(`Rescanned DB`);
-    if (req.query["play"]) {
+    if (req.query["play"] || req.query["queue"]) {
         // Find it 
         const findString = `(file contains '${req.params.filename}')`;
         await client.api.db.searchadd(findString);
-        const songs = await client.api.queue.find(findString);
-        if (!songs || !songs.length) {
-            console.log("Could not find file in MPD");
-            res.status(500).send("Could not find file in MPD");
-            return;
+        if (req.query["play"]) {
+            const songs = await client.api.queue.find(findString);
+            if (!songs || !songs.length) {
+                console.log("Could not find file in MPD");
+                res.status(500).send("Could not find file in MPD");
+                return;
+            }
+            await client.api.playback.playid(songs[songs.length-1].id);
         }
-        await client.api.playback.playid(songs[songs.length-1].id);
         console.log("Playing song");
     }
     res.status(200).send("OK");
